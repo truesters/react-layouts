@@ -1,16 +1,25 @@
-import React, { useEffect, useRef } from 'react'
+import { config, useSpring } from "@react-spring/web";
+import { useEffect, useRef, useState } from "react";
 
-interface IProps {
+type IProps = {
     data: any[];
     renderItem: (item: any, index: number) => JSX.Element;
 }
 
-const HorizontalGridLayout = (props: IProps) => {
+export const HorizontalGridLayout = (props: IProps) => {
     const divRef = useRef<HTMLDivElement>(null);
+    const [x, setX] = useSpring(() => ({
+        x: 0,
+        onChange: (props: any) => {
+            divRef.current?.scroll(props.value.x, 0);
+        },
+        config: config.molasses
+    }));
 
     const _handleScroll = (event: WheelEvent) => {
-        console.log("scrolllong", event)
-        divRef.current?.scrollBy(event?.deltaY * 10, 0)
+        setX({
+            x: x.x.get() + (event.deltaY * 5)
+        });
     }
 
     useEffect(() => {
@@ -19,17 +28,20 @@ const HorizontalGridLayout = (props: IProps) => {
         return () => {
             ref?.removeEventListener('wheel', _handleScroll)
         }
-    }, [])
+    }, []);
+
+    const _onDrag = (event: any) => {
+        console.log("draggg", event);
+    }
 
     const _renderItem = (item: any, index: number) => {
         return (
             <div
                 key={index}
                 style={{
-                    height: window.innerHeight/ 3,
-                    minWidth: window.innerHeight/ 3,
-                    scrollbarWidth: 'none',
-                    scrollSnapAlign: 'start'
+                    display: 'flex',
+                    flexDirection: 'column',
+                    cursor: 'pointer'
                 }}
             >
                 {props.renderItem(item, index)}
@@ -42,21 +54,13 @@ const HorizontalGridLayout = (props: IProps) => {
             ref={divRef}
             style={{
                 display: 'flex',
-                overflowX: 'auto',
-                alignItems: 'center',
-                backgroundColor: 'red',
-                scrollBehavior: 'smooth',
-                scrollSnapType: 'x'
+                flexDirection: 'row',
+                overflowX: 'hidden',
+                overflowY: 'hidden',
             }}
+            onTouchMove={_onDrag}
         >
-            {/* <div style={{
-                display: 'grid',
-                gridTemplateRows: 'auto auto'
-            }}> */}
                 {props.data.map(_renderItem)}
-            {/* </div> */}
         </div>
     )
 }
-
-export default HorizontalGridLayout

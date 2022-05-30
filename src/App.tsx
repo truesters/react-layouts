@@ -1,7 +1,5 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import HorizontalGridLayout from './components/HorizontalGridLayout';
+import { HorizontalGridLayout } from './libs/components/HorizontalGridLayout';
 
 function App() {
     const getRandomColor = () => {
@@ -13,27 +11,38 @@ function App() {
         return color;
     }
     return (
-        <div
-            style={{
-                backgroundColor: 'grey',
-                width: '100%'
-            }}
-        >
             <HorizontalGridLayout
                 data={[...new Array(20)?.map((item, index) => index)]}
-                renderItem={(index) => {
+                renderItem={(item, index) => {
+                    const dimension = window.innerHeight / 3;
                     return (
-                        <div style={{
-                            height: '100%',
-                            width: '100%',
-                            backgroundColor: getRandomColor()
-                        }}>
-                            <h1>{index}</h1>
+                        <div>
+                            <div style={{
+                                height: dimension,
+                                width: dimension,
+                                backgroundColor: getRandomColor(),
+                                margin: 10,
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center'
+                            }}>
+                                <h1>{index}</h1>
+                            </div>
+                            <div style={{
+                                height: dimension,
+                                width: dimension,
+                                backgroundColor: getRandomColor(),
+                                margin: 10,
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center'
+                            }}>
+                                <h1>{index}</h1>
+                            </div>
                         </div>
                     )
                 }}
             />
-        </div>
     );
 }
 
