@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 type IProps = {
     data: any[];
     renderItem: (item: any, index: number) => JSX.Element;
+    onScroll?: () => void;
+    onScrollEnd?: () => void;
 }
 
 export const HorizontalGridLayout = (props: IProps) => {
@@ -13,13 +15,15 @@ export const HorizontalGridLayout = (props: IProps) => {
         onChange: (props: any) => {
             divRef.current?.scroll(props.value.x, 0);
         },
-        config: config.molasses
+        config: config.slow,
+        onRest: props.onScrollEnd
     }));
 
     const _handleScroll = (event: WheelEvent) => {
         setX({
             x: x.x.get() + (event.deltaY * 5)
         });
+        props.onScroll && props.onScroll()
     }
 
     useEffect(() => {
